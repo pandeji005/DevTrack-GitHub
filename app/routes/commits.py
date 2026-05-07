@@ -113,7 +113,7 @@ def push_commit():
             'message': commit_message,
             'date': today.isoformat(),
             'streak': streak.current_streak
-        }, room=f"user_{current_user.id}")
+        }, to=f"user_{current_user.id}")
         
         return jsonify({'message': 'Committed successfully', 'sha': sha})
         

@@ -34,6 +34,8 @@ class Task(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'completed_at': self.completed_at.isoformat() if self.completed_at else None
         }
+    def __init__(self, **kwargs):
+        super(Task, self).__init__(**kwargs)
 
     def __repr__(self):
         return f'<Task {self.id} - {self.title}>'

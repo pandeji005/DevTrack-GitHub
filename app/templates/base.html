@@ -210,10 +210,13 @@
             transform: translateY(-1px);
             border-color: #414754;
         }
+        .material-symbols-outlined.fill-1 {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+        }
     </style>
     {% block head %}{% endblock %}
 </head>
-<body class="bg-bg-main">
+<body class="bg-bg-main" data-repo-id="{{ current_repo.id if current_repo else 0 }}" data-active-page="{{ active_page }}">
     <!-- Floating Controls -->
     <div class="floating-controls">
         <div class="floating-search group">
@@ -289,12 +292,12 @@
         </div>
         <nav class="flex-1 px-2 space-y-1">
             <a class="{% if active_page == 'dashboard' %}text-accent-blue bg-surface-container-high border-l-2 border-accent-blue{% else %}text-text-secondary hover:bg-surface-variant hover:text-text-primary{% endif %} font-medium flex items-center gap-element-gap px-4 py-2 transition-all" href="{{ url_for('dashboard') }}" title="Dashboard">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {% if active_page == 'dashboard' %}1{% else %}0{% endif %};">dashboard</span>
+                <span class="material-symbols-outlined {{ 'fill-1' if active_page == 'dashboard' else '' }}">dashboard</span>
                 <span class="text-body-sm font-body-sm sidebar-text">Dashboard</span>
             </a>
             <a class="{% if active_page == 'tasks' %}text-accent-blue bg-surface-container-high border-l-2 border-accent-blue{% else %}text-text-secondary hover:bg-surface-variant hover:text-text-primary{% endif %} flex items-center justify-between px-4 py-2 transition-all group" href="{{ url_for('tasks_page') }}" title="Tasks">
                 <div class="flex items-center gap-element-gap">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {% if active_page == 'tasks' %}1{% else %}0{% endif %};">checklist</span>
+                    <span class="material-symbols-outlined {{ 'fill-1' if active_page == 'tasks' else '' }}">checklist</span>
                     <span class="text-body-sm font-body-sm sidebar-text">Tasks</span>
                 </div>
                 <button onclick="event.preventDefault(); openGlobalTaskModal();" class="opacity-0 group-hover:opacity-100 p-1 hover:bg-accent-blue/20 hover:text-accent-blue rounded-lg transition-all">
@@ -302,19 +305,19 @@
                 </button>
             </a>
             <a class="{% if active_page == 'logs' %}text-accent-blue bg-surface-container-high border-l-2 border-accent-blue{% else %}text-text-secondary hover:bg-surface-variant hover:text-text-primary{% endif %} flex items-center gap-element-gap px-4 py-2 transition-all group" href="{{ url_for('logs_page') }}" title="Logs">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {% if active_page == 'logs' %}1{% else %}0{% endif %};">terminal</span>
+                <span class="material-symbols-outlined {{ 'fill-1' if active_page == 'logs' else '' }}">terminal</span>
                 <span class="text-body-sm font-body-sm sidebar-text">Logs</span>
             </a>
             <a class="{% if active_page == 'activity' %}text-accent-blue bg-surface-container-high border-l-2 border-accent-blue{% else %}text-text-secondary hover:bg-surface-variant hover:text-text-primary{% endif %} flex items-center gap-element-gap px-4 py-2 transition-all group" href="{{ url_for('activity') }}" title="Activity">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {% if active_page == 'activity' %}1{% else %}0{% endif %};">pulse_alert</span>
+                <span class="material-symbols-outlined {{ 'fill-1' if active_page == 'activity' else '' }}">pulse_alert</span>
                 <span class="text-body-sm font-body-sm sidebar-text">Activity</span>
             </a>
             <a class="{% if active_page == 'documents' %}text-accent-blue bg-surface-container-high border-l-2 border-accent-blue{% else %}text-text-secondary hover:bg-surface-variant hover:text-text-primary{% endif %} flex items-center gap-element-gap px-4 py-2 transition-all group" href="{{ url_for('documents_page') }}" title="Documents">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {% if active_page == 'documents' %}1{% else %}0{% endif %};">folder_open</span>
+                <span class="material-symbols-outlined {{ 'fill-1' if active_page == 'documents' else '' }}">folder_open</span>
                 <span class="text-body-sm font-body-sm sidebar-text">Documents</span>
             </a>
             <a class="{% if active_page == 'settings' %}text-accent-blue bg-surface-container-high border-l-2 border-accent-blue{% else %}text-text-secondary hover:bg-surface-variant hover:text-text-primary{% endif %} flex items-center gap-element-gap px-4 py-2 transition-all group" href="{{ url_for('settings') }}" title="Settings">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' {% if active_page == 'settings' %}1{% else %}0{% endif %};">settings</span>
+                <span class="material-symbols-outlined {{ 'fill-1' if active_page == 'settings' else '' }}">settings</span>
                 <span class="text-body-sm font-body-sm sidebar-text">Settings</span>
             </a>
         </nav>
@@ -453,10 +456,10 @@
     </style>
 
     <script>
-        // Global App State
+        // Global App State - Read from data attributes to satisfy IDE
         window.APP_CONFIG = {
-            currentRepoId: {{ current_repo.id if current_repo else 0 }},
-            activePage: "{{ active_page }}"
+            currentRepoId: parseInt(document.body.dataset.repoId || '0'),
+            activePage: document.body.dataset.activePage || ''
         };
     </script>
     <script>

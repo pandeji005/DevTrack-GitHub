@@ -10,6 +10,10 @@ class Folder(db.Model):
     
     notes = db.relationship('Note', backref='folder', lazy=True, cascade="all, delete-orphan")
 
+    def __init__(self, **kwargs):
+        super(Folder, self).__init__(**kwargs)
+
+
 class Note(db.Model):
     __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +23,10 @@ class Note(db.Model):
     content = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self, **kwargs):
+        super(Note, self).__init__(**kwargs)
+
 
     def to_dict(self):
         return {
@@ -37,3 +45,7 @@ class TaskComment(db.Model):
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id', ondelete='CASCADE'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, **kwargs):
+        super(TaskComment, self).__init__(**kwargs)
+

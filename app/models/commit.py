@@ -21,6 +21,8 @@ class Commit(db.Model):
             'files_changed': self.files_changed.split(',') if self.files_changed else [],
             'committed_at': self.committed_at.isoformat() if self.committed_at else None
         }
+    def __init__(self, **kwargs):
+        super(Commit, self).__init__(**kwargs)
 
     def __repr__(self):
         return f'<Commit {self.sha}>'

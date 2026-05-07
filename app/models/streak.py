@@ -17,3 +17,6 @@ class Streak(db.Model):
             'last_commit_date': self.last_commit_date.isoformat() if self.last_commit_date else None,
             'total_commits': self.total_commits
         }
+
+    def __init__(self, **kwargs):
+        super(Streak, self).__init__(**kwargs)

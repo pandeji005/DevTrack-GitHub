@@ -16,6 +16,8 @@ class User(UserMixin, db.Model):
     repositories = db.relationship('Repository', back_populates='user', cascade='all, delete-orphan')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
 
     def __repr__(self):
         return f'<User {self.username}>'
