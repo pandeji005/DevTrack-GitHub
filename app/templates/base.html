@@ -219,10 +219,17 @@
 <body class="bg-bg-main" data-repo-id="{{ current_repo.id if current_repo else 0 }}" data-active-page="{{ active_page }}">
     <!-- Floating Controls -->
     <div class="floating-controls">
-        <div class="floating-search group">
+        <div class="floating-search group relative">
             <span class="material-symbols-outlined text-text-secondary text-[18px]">search</span>
-            <input class="bg-transparent border-none focus:ring-0 text-body-sm w-full p-0 text-text-primary placeholder:text-text-secondary" placeholder="Search tasks, logs..." type="text"/>
+            <input id="global-search-input" class="bg-transparent border-none focus:ring-0 text-body-sm w-full p-0 text-text-primary placeholder:text-text-secondary" placeholder="Search tasks, logs..." type="text"/>
             <span class="text-[10px] bg-surface-container px-1 py-0.5 rounded border border-border-default text-text-secondary font-mono opacity-60">⌘K</span>
+            
+            <!-- Search Results Dropdown -->
+            <div id="global-search-results" class="absolute top-full left-0 right-0 mt-2 bg-bg-surface border border-border-default rounded-xl shadow-2xl z-50 hidden overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                <div id="search-results-list" class="max-h-80 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                    <!-- Results dynamic -->
+                </div>
+            </div>
         </div>
         <div class="floating-user">
             <div class="flex items-center gap-3 pr-2 border-r border-border-default mr-1">
@@ -589,6 +596,61 @@
             }
             if (!aiWindow.contains(e.target) && !aiToggle.contains(e.target) && !aiWindow.classList.contains('hidden')) {
                 toggleAIWindow();
+            }
+            if (!searchDropdown.contains(e.target) && e.target !== searchInput) {
+                searchDropdown.classList.add('hidden');
+            }
+        });
+
+        // --- Global Dashboard Search ---
+        const searchInput = document.getElementById('global-search-input');
+        const searchDropdown = document.getElementById('global-search-results');
+        const searchList = document.getElementById('search-results-list');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                searchDropdown.classList.add('hidden');
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`/api/search/global?q=${encodeURIComponent(query)}`);
+                    const results = await res.json();
+                    
+                    if (results.length === 0) {
+                        searchList.innerHTML = '<div class="p-4 text-center text-text-secondary text-xs italic">No matching tasks or logs</div>';
+                    } else {
+                        searchList.innerHTML = results.map(item => `
+                            <a href="${item.url}" class="flex items-center gap-3 p-3 hover:bg-surface-container rounded-lg group transition-all">
+                                <div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[18px] text-text-secondary group-hover:text-accent-blue transition-colors">
+                                        ${item.type === 'task' ? 'checklist' : 'terminal'}
+                                    </span>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p class="text-xs font-bold text-text-primary truncate">${item.title}</p>
+                                    <p class="text-[10px] text-text-secondary truncate">${item.subtitle}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                    searchDropdown.classList.remove('hidden');
+                } catch (e) {
+                    console.error('Search error:', e);
+                }
+            }, 300);
+        });
+
+        // Focus search with Cmd+K
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
             }
         });
 

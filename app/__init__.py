@@ -40,6 +40,7 @@ def create_app(config_class=Config):
     from app.routes.logs import logs_bp
     from app.routes.tasks import tasks_bp
     from app.routes.chat import chat_bp
+    from app.routes.search import search_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(repo_bp)
@@ -48,6 +49,7 @@ def create_app(config_class=Config):
     app.register_blueprint(logs_bp)
     app.register_blueprint(tasks_bp)
     app.register_blueprint(chat_bp)
+    app.register_blueprint(search_bp)
 
     @app.context_processor
     def inject_repo():
@@ -119,7 +121,7 @@ def create_app(config_class=Config):
     @app.route('/docs')
     def docs():
         if not current_user.is_authenticated:
-            return login_manager.unauthorized()
+            return render_template('public_docs.html', active_page='docs')
         return render_template('docs.html', active_page='docs')
 
     @app.route('/documents')

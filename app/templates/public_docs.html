@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>DevTrack | Documentation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "bg-main": "#0d1117",
+                        "text-primary": "#f0f6fc",
+                        "text-secondary": "#8b949e",
+                        "accent-blue": "#2f81f7",
+                        "border-default": "#30363d",
+                        "surface-container": "#1c2026",
+                        "surface-container-low": "#181c22",
+                        "bg-surface": "#161b22"
+                    },
+                    "spacing": {
+                        "navbar-height": "64px",
+                        "page-margin": "32px"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #f0f6fc;
+            font-family: 'Inter', sans-serif;
+        }
+        .docs-wrapper {
+            display: flex;
+            gap: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .docs-nav {
+            width: 240px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        .docs-content {
+            flex: 1;
+            max-width: 800px;
+        }
+        .docs-section {
+            margin-bottom: 64px;
+        }
+        .docs-nav-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #8b949e;
+            margin-bottom: 16px;
+            padding-left: 12px;
+        }
+        .docs-link {
+            display: block;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #8b949e;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        .docs-link:hover, .docs-link.active {
+            color: #f0f6fc;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        pre {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        code {
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Simple Header -->
+    <header class="fixed top-0 w-full z-50 h-navbar-height border-b border-border-default flex items-center justify-between px-page-margin bg-bg-main/80 backdrop-blur-md">
+        <div class="flex items-center gap-8">
+            <a class="flex items-center gap-2" href="{{ url_for('index') }}">
+                <div class="bg-white p-1 rounded-md">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="DevTrack Logo" class="h-6 w-auto">
+                </div>
+                <span class="font-bold text-text-primary">DevTrack Docs</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{{ url_for('auth.github_login') }}" class="text-text-secondary hover:text-text-primary text-sm font-medium">Sign In</a>
+            <a href="{{ url_for('auth.github_login') }}" class="bg-accent-blue hover:bg-opacity-90 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-all">Get Started</a>
+        </div>
+    </header>
+
+    <main class="pt-[100px]">
+        <div class="docs-wrapper">
+            <!-- Navigation -->
+            <nav class="docs-nav hidden md:block">
+                <div class="docs-nav-section">
+                    <p class="docs-nav-label">Basics</p>
+                    <a href="#introduction" class="docs-link active">Introduction</a>
+                    <a href="#github-sync" class="docs-link">GitHub Sync</a>
+                </div>
+                <div class="docs-nav-section">
+                    <p class="docs-nav-label">Features</p>
+                    <a href="#task-engine" class="docs-link">Task Engine</a>
+                    <a href="#daily-logs" class="docs-link">Daily Logs</a>
+                    <a href="#analytics" class="docs-link">Analytics</a>
+                </div>
+                <div class="docs-nav-section">
+                    <p class="docs-nav-label">Developer</p>
+                    <a href="#architecture" class="docs-link">Architecture</a>
+                    <a href="#tech-stack" class="docs-link">Tech Stack</a>
+                    <a href="#local-setup" class="docs-link">Local Setup</a>
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <article class="docs-content">
+                <section id="introduction" class="docs-section">
+                    <h1 class="text-4xl font-bold text-text-primary mb-6">DevTrack OS</h1>
+                    <p class="text-lg text-text-secondary leading-relaxed mb-6">
+                        DevTrack is a minimalist workspace designed for developers who value speed, structure, and professional growth. We automate the overhead so you can focus on building.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                        <div class="p-6 bg-surface-container rounded-2xl border border-border-default">
+                            <h3 class="text-lg font-bold text-text-primary mb-2">Focus First</h3>
+                            <p class="text-sm text-text-secondary">Clean interfaces designed to reduce cognitive load and keep you in the flow.</p>
+                        </div>
+                        <div class="p-6 bg-surface-container rounded-2xl border border-border-default">
+                            <h3 class="text-lg font-bold text-text-primary mb-2">Data Driven</h3>
+                            <p class="text-sm text-text-secondary">Real-time analytics that track your productivity across all repositories.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="github-sync" class="docs-section">
+                    <h2 class="text-2xl font-bold text-text-primary mb-4">GitHub Synchronization</h2>
+                    <p class="text-text-secondary leading-relaxed mb-6">
+                        DevTrack connects directly to your GitHub account to provide a seamless transition between coding and documenting.
+                    </p>
+                    <pre><code># Example Sync Command
+$ devtrack sync --repo=pandeji005/DevTrack</code></pre>
+                </section>
+
+                <!-- Add more sections as needed from docs.html -->
+                <section id="local-setup" class="docs-section">
+                    <h2 class="text-2xl font-bold text-text-primary mb-4">Local Setup</h2>
+                    <p class="text-text-secondary leading-relaxed mb-4">
+                        To run DevTrack locally for development:
+                    </p>
+                    <ol class="list-decimal list-inside text-text-secondary space-y-2">
+                        <li>Clone the repository</li>
+                        <li>Install dependencies: <code>pip install -r requirements.txt</code></li>
+                        <li>Configure <code>.env</code> with your GitHub API keys</li>
+                        <li>Run <code>python run.py</code></li>
+                    </ol>
+                </section>
+            </article>
+        </div>
+    </main>
+
+    <footer class="border-t border-border-default py-12 mt-20">
+        <div class="max-w-[1200px] mx-auto px-page-margin text-center">
+            <p class="text-sm text-text-secondary">© 2026 DevTrack OS • Built by Amogh Deshpande</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple scroll spy for docs
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.docs-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
