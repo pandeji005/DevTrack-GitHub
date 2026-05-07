@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks - DevTrack{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-10">
+    <div>
+        <h1 class="font-h1 text-h1 text-text-primary tracking-tight">Project Board</h1>
+        <p class="text-body-sm font-body-sm text-text-secondary">Manage your sprint and track GitHub commitments</p>
+    </div>
+    <div class="flex gap-4">
+        <button onclick="loadTasks()" class="p-3 bg-surface-container-low border border-border-default rounded-xl text-text-secondary hover:text-accent-blue transition-all">
+            <span class="material-symbols-outlined">refresh</span>
+        </button>
+        <button onclick="openGlobalTaskModal()" class="bg-accent-blue text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-3 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-accent-blue/20">
+            <span class="material-symbols-outlined">add</span>
+            New Task
+        </button>
+    </div>
+</div>
+
+<!-- Task Columns (Kanban Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 h-[calc(100vh-280px)]">
+    <!-- To Do -->
+    <div class="flex flex-col bg-surface-container-lowest/50 rounded-3xl border border-border-default/50 overflow-hidden">
+        <div class="p-5 border-b border-border-default flex items-center justify-between bg-surface-container-low/50">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-border-default"></div>
+                <h3 class="text-xs font-bold text-text-primary uppercase tracking-widest">To Do</h3>
+            </div>
+            <span id="todo-count" class="text-[10px] font-bold bg-surface-container px-2 py-0.5 rounded-full text-text-secondary border border-border-default">0</span>
+        </div>
+        <div id="todo-list" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <!-- Tasks injected here -->
+        </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="flex flex-col bg-surface-container-lowest/50 rounded-3xl border border-border-default/50 overflow-hidden">
+        <div class="p-5 border-b border-border-default flex items-center justify-between bg-surface-container-low/50">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-accent-blue animate-pulse"></div>
+                <h3 class="text-xs font-bold text-text-primary uppercase tracking-widest">In Progress</h3>
+            </div>
+            <span id="progress-count" class="text-[10px] font-bold bg-accent-blue/10 px-2 py-0.5 rounded-full text-accent-blue border border-accent-blue/20">0</span>
+        </div>
+        <div id="progress-list" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <!-- Tasks injected here -->
+        </div>
+    </div>
+
+    <!-- Done -->
+    <div class="flex flex-col bg-surface-container-lowest/50 rounded-3xl border border-border-default/50 overflow-hidden">
+        <div class="p-5 border-b border-border-default flex items-center justify-between bg-surface-container-low/50">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-success-green"></div>
+                <h3 class="text-xs font-bold text-text-primary uppercase tracking-widest">Done</h3>
+            </div>
+            <span id="done-count" class="text-[10px] font-bold bg-success-green/10 px-2 py-0.5 rounded-full text-success-green border border-success-green/20">0</span>
+        </div>
+        <div id="done-list" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <!-- Tasks injected here -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let tasks = [];
+
+    async function loadTasks() {
+        try {
+            const res = await fetch('/api/tasks');
+            tasks = await res.json();
+            renderBoard();
+        } catch (e) {
+            showToast('Failed to load tasks', 'error');
+        }
+    }
+
+    function renderBoard() {
+        const todoList = document.getElementById('todo-list');
+        const progressList = document.getElementById('progress-list');
+        const doneList = document.getElementById('done-list');
+
+        const todoTasks = tasks.filter(t => t.status === 'todo');
+        const progressTasks = tasks.filter(t => t.status === 'in_progress');
+        const doneTasks = tasks.filter(t => t.status === 'done');
+
+        document.getElementById('todo-count').innerText = todoTasks.length;
+        document.getElementById('progress-count').innerText = progressTasks.length;
+        document.getElementById('done-count').innerText = doneTasks.length;
+
+        renderColumn(todoList, todoTasks);
+        renderColumn(progressList, progressTasks);
+        renderColumn(doneList, doneTasks);
+    }
+
+    function renderColumn(el, columnTasks) {
+        if (columnTasks.length === 0) {
+            el.innerHTML = `<div class="h-full flex items-center justify-center text-meta text-text-secondary italic opacity-50">Empty</div>`;
+            return;
+        }
+
+        el.innerHTML = columnTasks.map(task => {
+            const priorityColors = {
+                critical: 'text-error bg-error/10 border-error/20',
+                high: 'text-tertiary-container bg-tertiary-container/10 border-tertiary-container/20',
+                medium: 'text-accent-blue bg-accent-blue/10 border-accent-blue/20',
+                low: 'text-text-secondary bg-surface-container border-border-default'
+            };
+            const pClass = priorityColors[task.priority] || priorityColors.medium;
+
+            return `
+                <div class="bg-bg-surface border border-border-default rounded-2xl p-5 hover:border-accent-blue/30 transition-all group relative cursor-pointer active:scale-[0.98]">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${pClass}">${task.priority}</span>
+                        <div class="flex gap-1">
+                            <button onclick="event.stopPropagation(); deleteTask(${task.id})" class="opacity-0 group-hover:opacity-100 p-1 text-text-secondary hover:text-error transition-all">
+                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="text-sm font-bold text-text-primary mb-2 leading-snug">${task.title}</h4>
+                    <p class="text-xs text-text-secondary mb-4 line-clamp-2">${task.description || 'No description provided.'}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[14px] text-text-secondary">category</span>
+                            <span class="text-[10px] font-bold text-text-secondary uppercase">${task.type}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            ${task.status === 'todo' ? `
+                                <button onclick="event.stopPropagation(); moveTask(${task.id}, 'in_progress')" class="p-1.5 hover:bg-surface-container rounded-lg transition-all text-accent-blue" title="Start Working">
+                                    <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                </button>
+                            ` : ''}
+                            ${task.status === 'in_progress' ? `
+                                <button onclick="event.stopPropagation(); moveTask(${task.id}, 'done')" class="p-1.5 hover:bg-surface-container rounded-lg transition-all text-success-green" title="Mark as Done">
+                                    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                </button>
+                            ` : ''}
+                            ${task.status === 'done' ? `
+                                <span class="text-[10px] font-bold text-success-green/60 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">history</span>
+                                    Expires in 1h
+                                </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function moveTask(id, newStatus) {
+        try {
+            const res = await fetch(`/api/tasks/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (res.ok) {
+                showToast(`Task moved to ${newStatus.replace('_', ' ')}`, 'success');
+                loadTasks();
+            }
+        } catch (e) { showToast('Update failed', 'error'); }
+    }
+
+    async function deleteTask(id) {
+        if (!confirm('Permanently delete this task?')) return;
+        try {
+            const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                showToast('Task deleted and removed from GitHub', 'success');
+                loadTasks();
+            }
+        } catch (e) { showToast('Delete failed', 'error'); }
+    }
+
+    window.addEventListener('taskCreated', () => loadTasks());
+
+    loadTasks();
+</script>
+{% endblock %}

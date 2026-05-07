@@ -1,0 +1,81 @@
+<!-- Generic Modal Container (Used by UI.js) -->
+<div id="modal-container" class="modal-overlay">
+    <div class="modal-content">
+        <div class="flex justify-between items-center mb-6">
+            <h3 id="modal-title" class="text-xl">Modal Title</h3>
+            <button id="btn-modal-close" class="btn btn-ghost" style="padding: 4px;"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div id="modal-body" class="mb-8">
+            <!-- Dynamic Content -->
+        </div>
+        <div id="modal-footer" class="flex justify-end gap-3">
+            <button id="btn-modal-cancel" class="btn btn-ghost">Cancel</button>
+            <button id="btn-modal-confirm" class="btn btn-primary">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Task Creation Modal -->
+<div id="task-modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+        <h3 class="text-2xl mb-2">Create New Task</h3>
+        <p class="text-sm text-text-secondary mb-8">Add a new action item to your current sprint.</p>
+        
+        <form id="task-form" class="flex-col gap-4">
+            <div class="flex-col gap-2">
+                <label class="text-xs font-bold uppercase text-text-muted">Task Title</label>
+                <input type="text" id="task-title" required class="search-container" style="width: 100%; background: var(--bg-primary);" placeholder="e.g. Fix memory leak in auth provider">
+            </div>
+            
+            <div class="flex gap-4">
+                <div class="flex-col gap-2" style="flex: 1;">
+                    <label class="text-xs font-bold uppercase text-text-muted">Type</label>
+                    <select id="task-type" class="search-container" style="width: 100%; background: var(--bg-primary);">
+                        <option value="feature">Feature</option>
+                        <option value="bugfix">Bugfix</option>
+                        <option value="learning">Learning</option>
+                        <option value="devops">DevOps</option>
+                    </select>
+                </div>
+                <div class="flex-col gap-2" style="flex: 1;">
+                    <label class="text-xs font-bold uppercase text-text-muted">Priority</label>
+                    <select id="task-priority" class="search-container" style="width: 100%; background: var(--bg-primary);">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-8">
+                <button type="button" id="btn-close-task-modal" class="btn btn-ghost">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Temporary modal styles until migrated to component.css */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal-overlay.active { display: flex; }
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+</style>

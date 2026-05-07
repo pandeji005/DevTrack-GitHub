@@ -1,0 +1,82 @@
+/* 
+   DevTrack components.css
+   Reusable UI elements (Cards, Buttons, Badges).
+*/
+
+/* Cards */
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    transition: 0.2s ease;
+}
+
+.card:hover {
+    border-color: var(--text-muted);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--accent-green);
+    color: #fff;
+}
+.btn-primary:hover {
+    background-color: #2ea043;
+}
+
+.btn-secondary {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+.btn-secondary:hover {
+    background-color: #30363d;
+    border-color: var(--text-muted);
+}
+
+.btn-ghost {
+    color: var(--text-secondary);
+}
+.btn-ghost:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Badges */
+.badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid transparent;
+}
+
+.badge-blue { background: rgba(47, 129, 247, 0.1); color: var(--accent-blue); border-color: rgba(47, 129, 247, 0.3); }
+.badge-green { background: rgba(35, 134, 54, 0.1); color: var(--accent-green); border-color: rgba(35, 134, 54, 0.3); }
+
+/* Typography Helpers */
+.text-xl { font-size: 1.25rem; font-weight: 700; }
+.text-2xl { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+.text-sm { font-size: 0.85rem; }
+.text-xs { font-size: 0.75rem; }
+.font-mono { font-family: var(--font-mono); }

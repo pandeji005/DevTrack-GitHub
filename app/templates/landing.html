@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>DevTrack | The OS for Modern Developers</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0a0e14",
+                        "background": "#10141a",
+                        "on-tertiary": "#522300",
+                        "surface-tint": "#acc7ff",
+                        "border-muted": "#21262d",
+                        "inverse-surface": "#dfe2eb",
+                        "accent-blue": "#2f81f7",
+                        "on-primary-container": "#00285b",
+                        "on-tertiary-fixed": "#321300",
+                        "text-primary": "#f0f6fc",
+                        "bg-surface": "#161b22",
+                        "on-secondary": "#00390e",
+                        "tertiary-container": "#e47014",
+                        "on-primary-fixed-variant": "#004492",
+                        "tertiary-fixed-dim": "#ffb68b",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#753400",
+                        "inverse-primary": "#005bbf",
+                        "on-primary-fixed": "#001a40",
+                        "border-default": "#30363d",
+                        "primary-fixed-dim": "#acc7ff",
+                        "inverse-on-surface": "#2d3137",
+                        "error-container": "#93000a",
+                        "surface-container": "#1c2026",
+                        "surface": "#10141a",
+                        "surface-bright": "#353940",
+                        "on-tertiary-container": "#481e00",
+                        "tertiary": "#ffb68b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#262a31",
+                        "on-surface-variant": "#c1c6d6",
+                        "on-secondary-container": "#91f294",
+                        "text-secondary": "#8b949e",
+                        "tertiary-fixed": "#ffdbc8",
+                        "on-secondary-fixed": "#002106",
+                        "primary": "#acc7ff",
+                        "primary-container": "#498fff",
+                        "on-surface": "#dfe2eb",
+                        "surface-dim": "#10141a",
+                        "primary-fixed": "#d7e2ff",
+                        "secondary-container": "#007124",
+                        "surface-variant": "#31353c",
+                        "on-primary": "#002f68",
+                        "secondary": "#7bdb80",
+                        "surface-container-low": "#181c22",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#414754",
+                        "bg-main": "#0d1117",
+                        "outline": "#8b909f",
+                        "on-secondary-fixed-variant": "#005319",
+                        "surface-container-highest": "#31353c",
+                        "secondary-fixed": "#97f999",
+                        "success-green": "#238636",
+                        "secondary-fixed-dim": "#7bdb80",
+                        "on-background": "#dfe2eb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "utility-panel-width": "320px",
+                        "navbar-height": "64px",
+                        "element-gap": "12px",
+                        "sidebar-width": "260px",
+                        "section-gap": "24px",
+                        "page-margin": "32px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "h1": ["Inter"],
+                        "meta": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "meta": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+        }
+        .hero-grid {
+            background-image: linear-gradient(#30363d 1px, transparent 1px), linear-gradient(90deg, #30363d 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black 0%, transparent 80%);
+        }
+        .btn-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+        .btn-shimmer:hover::after {
+            left: 120%;
+        }
+        .heatmap-cell {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-bg-main text-text-primary font-body-lg">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 h-navbar-height border-b border-border-default flex items-center justify-between px-page-margin w-full bg-bg-main">
+        <div class="flex items-center gap-3">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="DevTrack Logo" class="h-8 w-auto">
+            <span class="font-h3 text-h3 font-semibold text-text-primary">DevTrack</span>
+        </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a class="text-accent-blue font-semibold border-b-2 border-accent-blue font-body-sm text-body-sm h-navbar-height flex items-center" href="#">Product</a>
+                <a class="text-text-secondary hover:text-text-primary transition-colors font-body-sm text-body-sm" href="#">Features</a>
+                <a class="text-text-secondary hover:text-text-primary transition-colors font-body-sm text-body-sm" href="#">Integrations</a>
+                <a class="text-text-secondary hover:text-text-primary transition-colors font-body-sm text-body-sm" href="#">Pricing</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center bg-bg-surface border border-border-default px-3 py-1.5 rounded-lg gap-2 text-text-secondary focus-within:border-accent-blue transition-colors">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+                <input class="bg-transparent border-none focus:ring-0 text-body-sm p-0 w-32" placeholder="Search..." type="text"/>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ url_for('auth.github_login') }}" class="text-text-secondary hover:text-text-primary transition-all font-body-sm">Login</a>
+                <a href="{{ url_for('auth.github_login') }}" class="px-4 py-2 bg-success-green text-white rounded-lg font-body-sm font-semibold hover:opacity-90 transition-all">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-navbar-height">
+        <!-- Hero Section -->
+        <section class="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-page-margin">
+            <div class="absolute inset-0 hero-grid opacity-20 pointer-events-none"></div>
+            <div class="relative z-10 text-center max-w-4xl mx-auto pt-20">
+                <span class="inline-flex items-center px-3 py-1 rounded-full border border-accent-blue/30 bg-accent-blue/5 text-accent-blue text-meta font-meta mb-6">
+                    <span class="material-symbols-outlined text-[14px] mr-1" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                    v2.4.0 Now Stable
+                </span>
+                <h1 class="font-h1 text-[64px] leading-tight mb-6">The OS for Modern Developers</h1>
+                <p class="text-text-secondary text-body-lg max-w-2xl mx-auto mb-10">
+                    GitHub-native workspace meets AI-powered productivity. Track tasks, logs, and activity in one calm environment designed for deep work.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                    <a href="{{ url_for('auth.github_login') }}" class="btn-shimmer px-8 py-3 bg-success-green text-white font-semibold rounded-lg flex items-center gap-2 hover:opacity-90 transition-all">
+                        Get Started
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </a>
+                    <button class="px-8 py-3 border border-border-default bg-bg-surface text-text-primary font-semibold rounded-lg hover:bg-surface-variant transition-all">
+                        View Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Mockup -->
+            <div class="relative w-full max-w-6xl mx-auto px-4 mt-10">
+                <div class="glass-panel p-2 rounded-xl shadow-2xl relative">
+                    <div class="absolute -top-4 -left-4 w-24 h-24 bg-accent-blue/20 blur-3xl rounded-full"></div>
+                    <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-success-green/10 blur-3xl rounded-full"></div>
+                    <img alt="Dashboard Mockup" class="w-full h-auto rounded-lg" src="https://lh3.googleusercontent.com/aida/ADBb0uitViv6CM1wOIKQhCtUH_eAGnLDVvAP97q6Hv3kr_jX7dM8yksMM3fEdW4J8KWAfTBvRzApZ-Q97OkKdt9iCUFP03JBX2Snc7MU1ssxg8taIDF0yqJz3CtAJzIJzCYMjYi1fZctQHl9coBt_ZcTwnB1QnvmtDxnFtZ9fXUkb0WFvMEY7zMPJhqrfdZTKwmbzWXIuJChT4FbNLcL7kzHQgxf_NntSJzvnUhaZ7Lkkwv-Qde3e7UVPjr5YFhwXFPXd_T9Gdni8-x7Jw"/>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Grid -->
+        <section class="py-section-gap px-page-margin max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-h2 text-h2 mb-4">Built for focus, engineered for scale</h2>
+                <p class="text-text-secondary text-body-lg">The tools you need, integrated into a single high-performance canvas.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-bg-surface border border-border-default p-8 rounded-xl hover:border-accent-blue/50 transition-all group">
+                    <div class="w-12 h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center text-accent-blue mb-6">
+                        <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                    </div>
+                    <h3 class="font-h3 text-h3 mb-3">Contextual AI</h3>
+                    <p class="text-text-secondary text-body-sm">Integrated Copilot that understands your project structure and helps you manage logs and tasks with semantic context.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-bg-surface border border-border-default p-8 rounded-xl hover:border-accent-blue/50 transition-all group">
+                    <div class="w-12 h-12 bg-success-green/10 rounded-lg flex items-center justify-center text-success-green mb-6">
+                        <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">checklist</span>
+                    </div>
+                    <h3 class="font-h3 text-h3 mb-3">Structured Workflow</h3>
+                    <p class="text-text-secondary text-body-sm">Linear-style task management that connects directly to your commits. No more manual status updates.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-bg-surface border border-border-default p-8 rounded-xl hover:border-accent-blue/50 transition-all group">
+                    <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-6">
+                        <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+                    </div>
+                    <h3 class="font-h3 text-h3 mb-3">Deep Insights</h3>
+                    <p class="text-text-secondary text-body-sm">GitHub-style activity heatmaps and developer productivity metrics to visualize your momentum and consistency.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Integration Section -->
+        <section class="py-32 bg-surface-container-low border-y border-border-default overflow-hidden">
+            <div class="max-w-7xl mx-auto px-page-margin grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="font-h2 text-[40px] mb-6">Native GitHub Sync</h2>
+                    <p class="text-text-secondary text-body-lg mb-8">DevTrack isn't just another layer—it's a mirror of your GitHub ecosystem. Branches, commits, and PRs flow automatically into your workspace.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 text-text-primary">
+                            <span class="material-symbols-outlined text-success-green">check_circle</span>
+                            <span>Auto-link commits to task IDs</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-text-primary">
+                            <span class="material-symbols-outlined text-success-green">check_circle</span>
+                            <span>Real-time PR status notifications</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-text-primary">
+                            <span class="material-symbols-outlined text-success-green">check_circle</span>
+                            <span>Two-way comment synchronization</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative">
+                    <div class="bg-bg-main border border-border-default rounded-xl p-6 font-mono text-[13px] leading-relaxed shadow-xl">
+                        <div class="flex items-center gap-2 mb-4 border-b border-border-default pb-4">
+                            <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            <span class="text-text-secondary ml-2">terminal — devtrack-sync --active</span>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-accent-blue">❯ fetching latest from upstream...</p>
+                            <p class="text-success-green">✓ detected 3 new PRs in 'main'</p>
+                            <p class="text-text-primary">  - PR #442: Fix auth middleware [auth-patch]</p>
+                            <p class="text-text-primary">  - PR #445: Add bento grid components [ui-refresh]</p>
+                            <p class="text-text-secondary italic">// mapping PRs to workspace tasks...</p>
+                            <p class="text-primary">↻ syncing with local cache... [done]</p>
+                            <p class="text-text-primary">❯ ready for deep work.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Footer -->
+        <section class="py-32 px-page-margin text-center">
+            <h2 class="font-h1 text-[48px] mb-6">Ready to optimize your workflow?</h2>
+            <p class="text-text-secondary text-body-lg mb-10 max-w-xl mx-auto">Join 10,000+ developers who have found their flow state with DevTrack.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{{ url_for('dashboard') }}" class="px-10 py-4 bg-success-green text-white font-bold rounded-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-all">
+                    Get Started Now
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 px-page-margin border-t border-border-default">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col items-center md:items-start">
+                <div class="flex items-center gap-2 mb-2">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="h-8 w-auto">
+                    <span class="font-h3 text-h3 font-bold text-text-primary">DevTrack OS</span>
+                </div>
+                <p class="text-text-secondary text-body-sm">Designed in San Francisco. Built for the world.</p>
+            </div>
+            <div class="flex gap-8">
+                <a class="text-text-secondary hover:text-text-primary transition-colors text-body-sm" href="#">Privacy</a>
+                <a class="text-text-secondary hover:text-text-primary transition-colors text-body-sm" href="#">Terms</a>
+                <a class="text-text-secondary hover:text-text-primary transition-colors text-body-sm" href="#">Changelog</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

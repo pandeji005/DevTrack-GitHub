@@ -1,0 +1,45 @@
+/* 
+   DevTrack tasks.css
+   Linear-style task board and card styling.
+*/
+
+.task-row {
+    display: grid;
+    grid-template-columns: 48px 1fr 140px 140px 120px 60px;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border-muted);
+    align-items: center;
+    transition: background 0.1s ease;
+}
+
+.task-row:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.task-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.task-meta {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Priority Colors */
+.priority-high { color: var(--accent-red); }
+.priority-medium { color: var(--accent-orange); }
+.priority-low { color: var(--accent-blue); }
+
+/* Status Colors */
+.status-todo { color: var(--text-muted); }
+.status-inprogress { color: var(--accent-blue); }
+.status-done { color: var(--accent-green); }
+
+.task-icon {
+    font-size: 18px;
+    color: var(--text-muted);
+}

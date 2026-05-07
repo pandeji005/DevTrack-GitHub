@@ -1,0 +1,418 @@
+/* 
+   DevTrack OS - Premium Design System (Native CSS)
+   A clean, modular, and performant design system built for Flask.
+*/
+
+:root {
+    /* Core Layout Tokens */
+    --sidebar-width: 260px;
+    --utility-panel-width: 320px;
+    --navbar-height: 64px;
+    --page-margin: 32px;
+    --card-radius: 16px;
+    --btn-radius: 10px;
+
+    /* Transition Tokens */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-standard: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1. Global Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden; /* App Shell handles scrolling */
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+/* 2. App Layout (The Shell) */
+.app-shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr var(--utility-panel-width);
+    height: calc(100vh - 50px);
+    width: 100vw;
+    background-color: var(--bg-primary);
+}
+
+/* 3. Sidebar (Left) */
+.sidebar {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    z-index: 40;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sidebar-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--text-primary);
+}
+
+.sidebar-header p {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
+.sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--btn-radius);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.nav-link.active {
+    background-color: var(--bg-tertiary);
+    color: var(--accent-blue);
+    border-left: 3px solid var(--accent-blue);
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.sidebar-footer {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* 4. Main Content (Center) */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--bg-primary);
+    position: relative;
+}
+
+.content-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background-color: rgba(13, 17, 23, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem var(--page-margin);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.header-title span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.workspace-selector {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.workspace-selector select {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    outline: none;
+    cursor: pointer;
+}
+
+.content-body {
+    padding: var(--page-margin);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* 5. Utility Panel (Right) */
+.utility-panel {
+    background-color: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    z-index: 40;
+}
+
+.panel-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-top: 1.5rem;
+}
+
+.panel-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent-blue);
+    font-size: 1.1rem;
+}
+
+.panel-header p {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+}
+
+.panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.panel-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(13, 17, 23, 0.5);
+}
+
+/* 6. UI Components */
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 1.5rem;
+    transition: var(--transition-standard);
+}
+
+.card:hover {
+    border-color: var(--text-muted);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.progress-card {
+    grid-column: span 2;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--btn-radius);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border: 1px solid transparent;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-primary {
+    background-color: var(--accent-blue);
+    color: #fff;
+}
+
+.btn-success {
+    background-color: var(--accent-green);
+    color: #fff;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* 7. Heatmap */
+.heatmap-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 12px);
+    grid-auto-flow: column;
+    gap: 4px;
+}
+
+.heatmap-cell {
+    width: 12px;
+    height: 12px;
+    background-color: var(--bg-tertiary);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.3);
+    z-index: 10;
+    outline: 2px solid var(--accent-blue);
+}
+
+/* 8. Table / List View (Linear Style) */
+.data-table {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    background-color: var(--bg-secondary);
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 48px 1fr 140px 140px 120px 60px;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 48px 1fr 140px 140px 120px 60px;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+    transition: var(--transition-fast);
+}
+
+.table-row:hover {
+    background-color: var(--bg-tertiary);
+}
+
+/* 9. Copilot Chat */
+.chat-bubble {
+    background-color: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.chat-input {
+    width: 100%;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.chat-input:focus {
+    border-color: var(--accent-blue);
+}
+
+/* 10. Modals */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+/* Utility Helpers */
+.hidden { display: none !important; }
+.material-symbols-outlined { font-size: 20px; vertical-align: middle; }

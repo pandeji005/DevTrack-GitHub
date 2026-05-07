@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Activity{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <h1 class="font-h1 text-h1 text-text-primary mb-2">Developer Activity</h1>
+        <p class="font-body-sm text-body-sm text-text-secondary">Visualizing code velocity and system contributions over the last 12 months.</p>
+    </div>
+
+    <!-- Bento Grid Layout -->
+    <div class="grid grid-cols-12 gap-section-gap">
+        <!-- Contribution Heatmap -->
+        <section class="col-span-12 bg-bg-surface border border-border-default rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-h3 text-h3 text-text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-accent-blue">calendar_month</span>
+                    <span id="total-contributions">Calculating...</span> contributions in the last year
+                </h3>
+                <div class="flex items-center gap-2 text-text-secondary font-meta text-meta">
+                    <span>Less</span>
+                    <div class="flex gap-1">
+                        <div class="heatmap-cell bg-surface-container"></div>
+                        <div class="heatmap-cell bg-secondary-container opacity-40"></div>
+                        <div class="heatmap-cell bg-secondary-container opacity-70"></div>
+                        <div class="heatmap-cell bg-secondary-container"></div>
+                        <div class="heatmap-cell bg-secondary"></div>
+                    </div>
+                    <span>More</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto custom-scrollbar pb-2">
+                <div class="inline-grid grid-rows-7 grid-flow-col gap-1" id="activity-heatmap">
+                    <!-- Populated by script -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Velocity Chart -->
+        <section class="col-span-12 lg:col-span-7 bg-bg-surface border border-border-default rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-h3 text-h3 text-text-primary">Commit Frequency</h3>
+                <select class="bg-bg-main border border-border-default rounded-lg px-3 py-1 text-meta font-meta focus:outline-none text-text-primary">
+                    <option>Last 30 Days</option>
+                    <option>Last 90 Days</option>
+                </select>
+            </div>
+            <div id="commit-chart" class="h-48 flex items-end justify-between gap-2 px-2">
+                <!-- Populated by script -->
+            </div>
+            <div class="flex justify-between mt-4 text-meta font-meta text-text-secondary px-2">
+                <span id="chart-start-date">30 days ago</span>
+                <span id="chart-mid-date">15 days ago</span>
+                <span id="chart-end-date">Today</span>
+            </div>
+        </section>
+
+        <!-- PR Statistics -->
+        <section class="col-span-12 lg:col-span-5 bg-bg-surface border border-border-default rounded-xl p-6">
+            <h3 class="font-h3 text-h3 text-text-primary mb-6">Efficiency Metrics</h3>
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-text-secondary text-meta font-meta">Avg. Merge Time</div>
+                        <div class="text-h2 font-h2 text-text-primary" id="stat-merge-time">0.0h</div>
+                    </div>
+                    <span id="stat-trend" class="material-symbols-outlined text-secondary">trending_flat</span>
+                </div>
+                <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div id="stat-efficiency-bar" class="bg-secondary h-full w-[0%] transition-all duration-1000"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-border-default">
+                    <div>
+                        <div class="text-text-secondary text-meta font-meta">Tasks Done</div>
+                        <div class="text-h3 font-h3 text-text-primary" id="stat-tasks-done">0</div>
+                    </div>
+                    <div>
+                        <div class="text-text-secondary text-meta font-meta">Commit Streak</div>
+                        <div class="text-h3 font-h3 text-text-primary" id="stat-streak">0</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity Feed -->
+        <section class="col-span-12 bg-bg-surface border border-border-default rounded-xl overflow-hidden mb-page-margin">
+            <div class="p-6 border-b border-border-default flex items-center justify-between">
+                <h3 class="font-h3 text-h3 text-text-primary">Recent Activity Feed</h3>
+                <button class="text-accent-blue font-meta text-meta hover:underline">View All</button>
+            </div>
+            <div id="activity-feed" class="divide-y divide-border-default">
+                <!-- Populated by script -->
+                <div class="p-8 text-center text-text-secondary">
+                    <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-accent-blue rounded-full mb-2" role="status" aria-label="loading"></div>
+                    <p class="font-meta text-meta">Syncing developer feed...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function loadActivityData() {
+        try {
+            // 0. Trigger GitHub Sync first for real-time data
+            console.log("Syncing with GitHub...");
+            await fetch('/api/analytics/sync-github', { method: 'POST' });
+            
+            // 1. Load Heatmap & Total Count
+            const heatmapGrid = document.getElementById('activity-heatmap');
+            const totalCountEl = document.getElementById('total-contributions');
+            
+            const heatmapRes = await fetch('/api/analytics/heatmap');
+            const heatmapData = await heatmapRes.json();
+            
+            if (totalCountEl) totalCountEl.textContent = heatmapData.total_commits.toLocaleString();
+            
+            if (heatmapGrid) {
+                heatmapGrid.innerHTML = '';
+                const today = new Date();
+                for (let i = 364; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const count = heatmapData.heatmap[dateStr] || 0;
+                    const div = document.createElement('div');
+                    let colorClass = 'bg-surface-container';
+                    if (count > 0 && count <= 2) colorClass = 'bg-secondary-container opacity-40';
+                    else if (count > 2 && count <= 5) colorClass = 'bg-secondary-container opacity-70';
+                    else if (count > 5 && count <= 10) colorClass = 'bg-secondary-container';
+                    else if (count > 10) colorClass = 'bg-secondary';
+                    div.className = `heatmap-cell ${colorClass}`;
+                    div.title = `${dateStr}: ${count} activities`;
+                    heatmapGrid.appendChild(div);
+                }
+            }
+
+            // 2. Load Stats
+            const statsRes = await fetch('/api/analytics/stats');
+            const stats = await statsRes.json();
+            
+            document.getElementById('stat-tasks-done').textContent = stats.total_tasks_done;
+            document.getElementById('stat-streak').textContent = stats.current_streak + ' days';
+            
+            // Mock efficiency logic based on streak and commits
+            const efficiency = Math.min(100, (stats.commits_30d * 2) + (stats.total_tasks_done / 2));
+            document.getElementById('stat-efficiency-bar').style.width = efficiency + '%';
+            document.getElementById('stat-merge-time').textContent = (stats.commits_7d > 0 ? (24 / stats.commits_7d).toFixed(1) : '0.0') + 'h';
+
+            // 3. Populate Chart
+            const chartGrid = document.getElementById('commit-chart');
+            if (chartGrid) {
+                chartGrid.innerHTML = '';
+                const daily = stats.daily_commits || {};
+                const today = new Date();
+                const maxCommits = Math.max(...Object.values(daily), 5);
+                
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    const count = daily[dateStr] || 0;
+                    const height = (count / maxCommits) * 100;
+                    
+                    const bar = document.createElement('div');
+                    bar.className = 'flex-1 bg-accent-blue rounded-t-sm transition-all duration-500';
+                    bar.style.height = Math.max(5, height) + '%';
+                    bar.style.opacity = count > 0 ? (0.3 + (count / maxCommits) * 0.7) : 0.1;
+                    bar.title = `${dateStr}: ${count} commits`;
+                    chartGrid.appendChild(bar);
+                }
+            }
+
+            // 4. Load Feed
+            const feedContainer = document.getElementById('activity-feed');
+            const feedRes = await fetch('/api/analytics/activity');
+            const activities = await feedRes.json();
+            
+            if (feedContainer) {
+                feedContainer.innerHTML = '';
+                if (activities.length === 0) {
+                    feedContainer.innerHTML = '<div class="p-8 text-center text-text-secondary font-meta text-meta">No recent activity found. Start committing!</div>';
+                } else {
+                    activities.forEach(act => {
+                        const date = new Date(act.timestamp);
+                        const timeAgo = formatTimeAgo(date);
+                        let icon = 'commit';
+                        let iconColor = 'text-secondary';
+                        let actionText = '';
+
+                        if (act.type === 'commit') {
+                            icon = 'commit';
+                            iconColor = 'text-secondary';
+                            actionText = `Pushed commit: <span class="font-bold">${act.title}</span>`;
+                        } else if (act.type === 'task') {
+                            icon = 'task_alt';
+                            iconColor = 'text-accent-blue';
+                            actionText = `Completed task: <span class="font-bold">${act.title}</span>`;
+                        } else if (act.type === 'note') {
+                            icon = 'edit_note';
+                            iconColor = 'text-accent-blue';
+                            actionText = `Added Dev Log: <span class="font-bold">${act.title}</span>`;
+                        }
+
+                        const item = document.createElement('div');
+                        item.className = 'p-4 flex gap-4 hover:bg-surface-container transition-colors cursor-pointer';
+                        item.innerHTML = `
+                            <div class="mt-1">
+                                <span class="material-symbols-outlined ${iconColor}">${icon}</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-body-sm text-body-sm text-text-primary">${actionText}</span>
+                                    <span class="font-meta text-meta text-text-secondary">${timeAgo}</span>
+                                </div>
+                                <p class="text-text-secondary font-body-sm text-body-sm">${act.meta || ''}</p>
+                            </div>
+                        `;
+                        feedContainer.appendChild(item);
+                    });
+                }
+            }
+
+        } catch (e) { 
+            console.error(e);
+            const feed = document.getElementById('activity-feed');
+            if (feed) feed.innerHTML = '<div class="p-8 text-center text-error">Failed to load activity data.</div>';
+        }
+    }
+
+    function formatTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + "y ago";
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + "mo ago";
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + "d ago";
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + "h ago";
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + "m ago";
+        return Math.floor(seconds) + "s ago";
+    }
+
+    loadActivityData();
+</script>
+{% endblock %}

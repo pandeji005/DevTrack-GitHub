@@ -1,0 +1,132 @@
+/* Notes View (Notion Style) */
+.workspace-view {
+  display: none;
+}
+
+.workspace-view.active {
+  display: block;
+}
+
+.notes-container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: calc(100vh - 120px);
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.notes-sidebar {
+  border-right: 1px solid var(--border-color);
+  padding: 1rem;
+  background-color: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.notes-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.notes-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.note-item {
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.note-item:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.note-item.active {
+  background-color: rgba(47, 129, 247, 0.1);
+  color: var(--accent-blue);
+  font-weight: 500;
+}
+
+.notes-editor-area {
+  padding: 2rem;
+  background-color: var(--bg-primary);
+  overflow-y: auto;
+}
+
+.note-editor-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.note-title-input {
+  width: 100%;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  outline: none;
+}
+
+.editor-toolbar {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-muted);
+  margin-bottom: 1rem;
+}
+
+.toolbar-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.toolbar-btn:hover {
+  color: var(--text-primary);
+}
+
+.note-content-input {
+  width: 100%;
+  min-height: 400px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.note-preview {
+  display: none;
+}
+
+.note-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+}
+
+.hidden {
+  display: none;
+}

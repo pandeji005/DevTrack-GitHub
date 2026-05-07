@@ -1,0 +1,30 @@
+<nav class="navbar">
+    <div class="nav-left">
+        <a href="/" class="nav-logo">DevTrack</a>
+        <div class="repo-switcher">
+            <span class="material-symbols-outlined" style="font-size: 16px;">database</span>
+            <select class="repo-select">
+                <option>Select Workspace...</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="nav-center">
+        <div class="search-container">
+            <span class="material-symbols-outlined" style="font-size: 18px; color: var(--text-muted);">search</span>
+            <input type="text" placeholder="Search tasks, logs, notes...">
+        </div>
+    </div>
+
+    <div class="nav-right">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined" style="font-size: 20px; color: var(--text-secondary);">sync</span>
+            <span class="text-xs font-bold uppercase text-text-secondary">Synced</span>
+        </div>
+        <span class="material-symbols-outlined" style="color: var(--text-secondary);">notifications</span>
+        <img src="{{ current_user.avatar_url }}" class="nav-avatar" alt="User Profile">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost" style="padding: 4px;">
+            <span class="material-symbols-outlined">logout</span>
+        </a>
+    </div>
+</nav>

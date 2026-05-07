@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks - DevTrack{% endblock %}
+
+{% block content %}
+<div class="max-w-[1400px] mx-auto">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <nav class="flex items-center gap-2 mb-2">
+                <span class="text-[10px] font-bold text-text-secondary uppercase tracking-widest opacity-60">Workspace</span>
+                <span class="material-symbols-outlined text-[12px] text-text-secondary">chevron_right</span>
+                <span class="text-[10px] font-bold text-accent-blue uppercase tracking-widest">Sprint Board</span>
+            </nav>
+            <h1 class="font-h1 text-2xl text-text-primary tracking-tight font-bold">Project Board</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex -space-x-2 mr-4">
+                <div class="w-8 h-8 rounded-full border-2 border-bg-main bg-accent-blue/20 flex items-center justify-center text-[10px] font-bold text-accent-blue">AM</div>
+                <div class="w-8 h-8 rounded-full border-2 border-bg-main bg-surface-container flex items-center justify-center text-[10px] font-bold text-text-secondary">+2</div>
+            </div>
+            <button onclick="loadTasks()" class="p-2.5 bg-surface-container-low border border-border-default rounded-xl text-text-secondary hover:text-accent-blue transition-all group">
+                <span class="material-symbols-outlined text-[20px] group-active:rotate-180 transition-transform duration-500">refresh</span>
+            </button>
+            <button onclick="openGlobalTaskModal()" class="bg-accent-blue text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-accent-blue/20">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                New Task
+            </button>
+        </div>
+    </div>
+
+    <!-- Kanban Board Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-240px)] min-h-[500px]">
+        <!-- To Do -->
+        <div class="flex flex-col bg-surface-container-lowest/30 backdrop-blur-md rounded-2xl border border-border-default/40 overflow-hidden group/col">
+            <div class="px-5 py-4 border-b border-border-default/30 flex items-center justify-between bg-surface-container-low/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-text-secondary opacity-40"></div>
+                    <h3 class="text-[11px] font-black text-text-secondary uppercase tracking-[0.1em]">To Do</h3>
+                    <span id="todo-count" class="text-[10px] font-bold text-text-secondary bg-surface-container-high/50 px-2 py-0.5 rounded-md border border-border-default/50">0</span>
+                </div>
+                <button onclick="openGlobalTaskModal()" class="opacity-0 group-hover/col:opacity-100 p-1 hover:bg-accent-blue/10 rounded-md transition-all">
+                    <span class="material-symbols-outlined text-[16px] text-accent-blue">add</span>
+                </button>
+            </div>
+            <div id="todo-list" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                <!-- Tasks injected here -->
+            </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="flex flex-col bg-surface-container-lowest/30 backdrop-blur-md rounded-2xl border border-border-default/40 overflow-hidden group/col">
+            <div class="px-5 py-4 border-b border-border-default/30 flex items-center justify-between bg-surface-container-low/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-accent-blue shadow-[0_0_8px_rgba(47,129,247,0.5)]"></div>
+                    <h3 class="text-[11px] font-black text-text-primary uppercase tracking-[0.1em]">In Progress</h3>
+                    <span id="progress-count" class="text-[10px] font-bold text-accent-blue bg-accent-blue/10 px-2 py-0.5 rounded-md border border-accent-blue/20">0</span>
+                </div>
+            </div>
+            <div id="progress-list" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                <!-- Tasks injected here -->
+            </div>
+        </div>
+
+        <!-- Done -->
+        <div class="flex flex-col bg-surface-container-lowest/30 backdrop-blur-md rounded-2xl border border-border-default/40 overflow-hidden group/col">
+            <div class="px-5 py-4 border-b border-border-default/30 flex items-center justify-between bg-surface-container-low/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-success-green shadow-[0_0_8px_rgba(59,201,135,0.5)]"></div>
+                    <h3 class="text-[11px] font-black text-text-primary uppercase tracking-[0.1em]">Done</h3>
+                    <span id="done-count" class="text-[10px] font-bold text-success-green bg-success-green/10 px-2 py-0.5 rounded-md border border-success-green/20">0</span>
+                </div>
+            </div>
+            <div id="done-list" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                <!-- Tasks injected here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .task-card {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 14px;
+        padding: 14px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .task-card:hover {
+        border-color: #414754;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -10px rgba(0,0,0,0.5);
+    }
+    .task-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+        pointer-events: none;
+    }
+    .priority-tag {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 2px 8px;
+        border-radius: 6px;
+    }
+    .empty-state {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.3;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let tasks = [];
+
+    async function loadTasks() {
+        try {
+            const res = await fetch('/api/tasks');
+            tasks = await res.json();
+            renderBoard();
+        } catch (e) {
+            showToast('Failed to load tasks', 'error');
+        }
+    }
+
+    function renderBoard() {
+        const todoList = document.getElementById('todo-list');
+        const progressList = document.getElementById('progress-list');
+        const doneList = document.getElementById('done-list');
+
+        const todoTasks = tasks.filter(t => t.status === 'todo');
+        const progressTasks = tasks.filter(t => t.status === 'in_progress');
+        const doneTasks = tasks.filter(t => t.status === 'done');
+
+        document.getElementById('todo-count').innerText = todoTasks.length;
+        document.getElementById('progress-count').innerText = progressTasks.length;
+        document.getElementById('done-count').innerText = doneTasks.length;
+
+        renderColumn(todoList, todoTasks);
+        renderColumn(progressList, progressTasks);
+        renderColumn(doneList, doneTasks);
+    }
+
+    function renderColumn(el, columnTasks) {
+        if (columnTasks.length === 0) {
+            el.innerHTML = `
+                <div class="empty-state">
+                    <span class="material-symbols-outlined text-4xl mb-2">inbox</span>
+                    <p class="text-[11px] font-bold tracking-widest uppercase">No Tasks</p>
+                </div>`;
+            return;
+        }
+
+        el.innerHTML = columnTasks.map(task => {
+            const priorityColors = {
+                critical: 'text-error bg-error/10 border-error/20',
+                high: 'text-tertiary-container bg-tertiary-container/10 border-tertiary-container/20',
+                medium: 'text-accent-blue bg-accent-blue/10 border-accent-blue/20',
+                low: 'text-text-secondary bg-surface-container border-border-default'
+            };
+            const pClass = priorityColors[task.priority] || priorityColors.medium;
+
+            let typeIcon = 'rocket_launch';
+            if (task.type === 'bug') typeIcon = 'bug_report';
+            if (task.type === 'devops') typeIcon = 'settings';
+
+            return `
+                <div class="task-card group/card">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="priority-tag border ${pClass}">${task.priority}</span>
+                        <div class="flex gap-1">
+                            <button onclick="event.stopPropagation(); deleteTask(${task.id})" class="opacity-0 group-hover/card:opacity-100 p-1 text-text-secondary hover:text-error transition-all">
+                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="text-[13px] font-bold text-text-primary mb-1.5 leading-tight line-clamp-2">${task.title}</h4>
+                    <p class="text-[11px] text-text-secondary mb-4 line-clamp-2 leading-normal">${task.description || 'No context provided.'}</p>
+                    <div class="flex items-center justify-between mt-auto pt-3 border-t border-border-default/30">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[14px] text-text-secondary/60">${typeIcon}</span>
+                            <span class="text-[9px] font-black text-text-secondary uppercase tracking-widest">${task.type}</span>
+                        </div>
+                        <div class="flex gap-1.5">
+                            ${task.status === 'todo' ? `
+                                <button onclick="event.stopPropagation(); moveTask(${task.id}, 'in_progress')" class="w-7 h-7 flex items-center justify-center bg-accent-blue/10 hover:bg-accent-blue text-accent-blue hover:text-white rounded-lg transition-all" title="Start Working">
+                                    <span class="material-symbols-outlined text-[16px]">play_arrow</span>
+                                </button>
+                            ` : ''}
+                            ${task.status === 'in_progress' ? `
+                                <button onclick="event.stopPropagation(); moveTask(${task.id}, 'done')" class="w-7 h-7 flex items-center justify-center bg-success-green/10 hover:bg-success-green text-success-green hover:text-white rounded-lg transition-all" title="Complete">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                </button>
+                            ` : ''}
+                            ${task.status === 'done' ? `
+                                <div class="flex items-center gap-1.5 text-success-green/60 py-1">
+                                    <span class="material-symbols-outlined text-[14px]">history</span>
+                                    <span class="text-[9px] font-bold uppercase tracking-widest">Done</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function moveTask(id, newStatus) {
+        try {
+            const res = await fetch(`/api/tasks/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (res.ok) {
+                showToast(`Task moved to ${newStatus.replace('_', ' ')}`, 'success');
+                loadTasks();
+            }
+        } catch (e) { showToast('Update failed', 'error'); }
+    }
+
+    async function deleteTask(id) {
+        if (!confirm('Permanently delete this task?')) return;
+        try {
+            const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                showToast('Task deleted', 'success');
+                loadTasks();
+            }
+        } catch (e) { showToast('Delete failed', 'error'); }
+    }
+
+    window.addEventListener('taskCreated', () => loadTasks());
+    loadTasks();
+</script>
+{% endblock %}
