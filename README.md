@@ -2,7 +2,7 @@
 
 **DevTrack OS** is a premium, minimalist developer operating system designed to streamline your workflow, track your daily growth, and automate your GitHub documentation. Built for high-velocity developers who value focus and structure.
 
-![Premium UI](https://raw.githubusercontent.com/pandeji005/DevTrack-GitHub/main/app/static/images/preview.png) *(Note: Add your own preview image here)*
+
 
 ## ✨ Key Features
 
@@ -82,9 +82,6 @@ Contributions are what make the open-source community such an amazing place to l
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
